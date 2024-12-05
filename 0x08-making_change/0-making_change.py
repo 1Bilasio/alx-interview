@@ -1,22 +1,28 @@
 #!/usr/bin/python3
-##Change making module.
+##Module to solve the coin change problem using dynamic programming
 
 def makeChange(coins, total):
-    ##Determines the fewest number of coins needed to meet a givenamount total when given a pile of coins of different values
+    """
+    Determine the fewest number of coins needed to meet a given total.
+
+    Args:
+        coins (list): List of coin denominations available
+        total (int): Target total amount to make change for
+
+    Returns:
+        int: Fewest number of coins needed to meet total,
+             or -1 if total cannot be met
+    """
 
     if total <= 0:
         return 0
-    rem = total
-    coins_count = 0
-    coin_idx = 0
-    sorted_coins = sorted(coins, reverse=True)
-    n = len(coins)
-    while rem > 0:
-        if coin_idx >= n:
-            return -1
-        if rem - sorted_coins[coin_idx] >= 0:
-            rem -= sorted_coins[coin_idx]
-            coins_count += 1
-        else:
-            coin_idx += 1
-    return coins_count
+
+    dp = [float('inf')] * (total + 1)
+    dp[0] = 0
+
+    for i in range(1, total + 1):
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+
+    return dp[total] if dp[total] != float('inf') else -1
